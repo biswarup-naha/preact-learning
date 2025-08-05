@@ -1,12 +1,14 @@
-import { signal } from '@preact/signals';
+import { batch, signal } from '@preact/signals';
 
 const todos = signal([{ text: 'Buy groceries' }, { text: 'Walk the dog' }]);
 
 const text = signal('');
 
 function addTodo() {
-    todos.value = [...todos.value, { text: text.value }];
-    text.value = ''; 
+    batch(() => {
+        todos.value = [...todos.value, { text: text.value }];
+        text.value = ''; 
+    })
 }
 
 function removeTodo(todo) {
@@ -18,6 +20,7 @@ export default function TodoList() {
 
     return (
         <>
+            <h1>Todo List App</h1>
             <input value={text.value} onInput={handleInput} />
             <button onClick={addTodo}>Add</button>
             <ul>
